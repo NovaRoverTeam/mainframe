@@ -1,0 +1,472 @@
+<?xml version="1.0"?>
+<robot name="six_susp" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="damp" value="30" />
+
+<!-- *********************** GAZEBO *********************** -->
+
+   <gazebo>
+     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+       <robotNamespace>/six_susp</robotNamespace>
+     </plugin>
+   </gazebo>
+
+   <gazebo reference="base_link_leg_fr">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo>
+   <gazebo reference="base_link_leg_mr">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo>
+   <gazebo reference="base_link_leg_br">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo>
+   <gazebo reference="base_link_leg_fl">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo>
+   <gazebo reference="base_link_leg_ml">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo>
+   <gazebo reference="base_link_leg_bl">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo>
+
+<!-- ******************* TRANSMISSIONS ******************** -->
+
+  <transmission name="susp_leg_fr">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_link_leg_fr">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_leg_fr">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="susp_leg_mr">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_link_leg_mr">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_leg_mr">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="susp_leg_br">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_link_leg_br">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_leg_br">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="susp_leg_fl">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_link_leg_fl">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_leg_fl">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="susp_leg_ml">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_link_leg_ml">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_leg_ml">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="susp_leg_bl">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_link_leg_bl">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_leg_bl">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="drive_wheel_fr">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="leg_fr_wheel_fr">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_wheel_fr">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="drive_wheel_mr">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="leg_mr_wheel_mr">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_wheel_mr">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="drive_wheel_br">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="leg_br_wheel_br">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_wheel_br">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="drive_wheel_fl">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="leg_fl_wheel_fl">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_wheel_fl">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="drive_wheel_ml">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="leg_ml_wheel_ml">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_wheel_ml">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="drive_wheel_bl">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="leg_bl_wheel_bl">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_wheel_bl">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+<!-- ************************ LINKS ************************ -->
+
+<link name="base_link">
+    <visual>
+      <geometry>
+        <box size="1 0.5 0.25"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1 0.5 0.25"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="20"/>
+      <inertia ixx="0.520833333" ixy="0.0" ixz="0.0" iyy="1.770833333" iyz="0.0" izz="2.083333333"/>
+    </inertial>
+  </link>
+
+  <link name="leg_fr">
+    <visual>
+      <geometry>
+        <box size="0.1 0.05 0.40"/>
+      </geometry>
+      <origin xyz="0 0 -0.2"/>
+      <material name="white">
+         <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.054166667" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <link name="leg_mr">
+    <visual>
+      <geometry>
+        <box size="0.1 0.05 0.40"/>
+      </geometry>
+      <origin xyz="0 0 -0.2"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.054166667" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <link name="leg_br">
+    <visual>
+      <geometry>
+        <box size="0.1 0.05 0.40"/>
+      </geometry>
+      <origin xyz="0 0 -0.2"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.054166667" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <link name="leg_fl">
+    <visual>
+      <geometry>
+        <box size="0.1 0.05 0.40"/>
+      </geometry>
+      <origin xyz="0 0 -0.2"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.054166667" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <link name="leg_ml">
+    <visual>
+      <geometry>
+        <box size="0.1 0.05 0.40"/>
+      </geometry>
+      <origin xyz="0 0 -0.2"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.054166667" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <link name="leg_bl">
+    <visual>
+      <geometry>
+        <box size="0.1 0.05 0.40"/>
+      </geometry>
+      <origin xyz="0 0 -0.2"/>
+      <material name="white"/>
+    </visual>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.054166667" iyz="0.0" izz="0.0"/>
+    </inertial>
+  </link>
+
+  <link name="wheel_fr">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </collision>    
+    <inertial>
+      <mass value="2"/>
+      <inertia ixx="0.00875" ixy="0.0" ixz="0.0" iyy="0.00875" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <link name="wheel_mr">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </collision> 
+    <inertial>
+      <mass value="2"/>
+      <inertia ixx="0.00875" ixy="0.0" ixz="0.0" iyy="0.00875" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <link name="wheel_br">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </collision> 
+    <inertial>
+      <mass value="2"/>
+      <inertia ixx="0.00875" ixy="0.0" ixz="0.0" iyy="0.00875" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <link name="wheel_fl">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </collision> 
+    <inertial>
+      <mass value="2"/>
+      <inertia ixx="0.00875" ixy="0.0" ixz="0.0" iyy="0.00875" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <link name="wheel_ml">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </collision> 
+    <inertial>
+      <mass value="2"/>
+      <inertia ixx="0.00875" ixy="0.0" ixz="0.0" iyy="0.00875" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <link name="wheel_bl">
+    <visual>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.15" radius="0.1"/>
+      </geometry>
+      <origin rpy="1.57075 0 0"/>
+    </collision> 
+    <inertial>
+      <mass value="2"/>
+      <inertia ixx="0.00875" ixy="0.0" ixz="0.0" iyy="0.00875" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+
+<!-- ************************ JOINTS *********************** -->
+
+  <joint name="base_link_leg_fr" type="prismatic">
+    <parent link="base_link"/>
+    <child link="leg_fr"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="0" upper="0.2" velocity="100"/>
+    <dynamics damping="${damp}"/>
+    <origin xyz="0.4 0.275 0"/>
+  </joint>
+
+  <joint name="base_link_leg_fl" type="prismatic">
+    <parent link="base_link"/>
+    <child link="leg_fl"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="0" upper="0.2" velocity="100"/>
+    <dynamics damping="${damp}"/>
+    <origin xyz="0.4 -0.275 0"/>
+  </joint>
+
+  <joint name="base_link_leg_mr" type="prismatic">
+    <parent link="base_link"/>
+    <child link="leg_mr"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="0" upper="0.2" velocity="100"/>
+    <dynamics damping="${damp}"/>
+    <origin xyz="0 0.275 0"/>
+  </joint>
+
+  <joint name="base_link_leg_ml" type="prismatic">
+    <parent link="base_link"/>
+    <child link="leg_ml"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="0" upper="0.2" velocity="100"/>
+    <dynamics damping="${damp}"/>
+    <origin xyz="0 -0.275 0"/>
+  </joint>
+
+  <joint name="base_link_leg_br" type="prismatic">
+    <parent link="base_link"/>
+    <child link="leg_br"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="0" upper="0.2" velocity="100"/>
+    <dynamics damping="${damp}"/>
+    <origin xyz="-0.4 0.275 0"/>
+  </joint>
+
+  <joint name="base_link_leg_bl" type="prismatic">
+    <parent link="base_link"/>
+    <child link="leg_bl"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="0" upper="0.2" velocity="100"/>
+    <dynamics damping="${damp}"/>
+    <origin xyz="-0.40 -0.275 0"/>
+  </joint>
+  
+  <joint name="leg_fr_wheel_fr" type="continuous">
+    <parent link="leg_fr"/>
+    <child link="wheel_fr"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0.05 -0.4"/>
+  </joint>
+
+  <joint name="leg_fl_wheel_fl" type="continuous">
+    <parent link="leg_fl"/>
+    <child link="wheel_fl"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 -0.05 -0.4"/>
+  </joint>
+
+  <joint name="leg_mr_wheel_mr" type="continuous">
+    <parent link="leg_mr"/>
+    <child link="wheel_mr"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0.05 -0.4"/>
+  </joint>
+
+  <joint name="leg_ml_wheel_ml" type="continuous">
+    <parent link="leg_ml"/>
+    <child link="wheel_ml"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 -0.05 -0.4"/>
+  </joint>
+
+  <joint name="leg_br_wheel_br" type="continuous">
+    <parent link="leg_br"/>
+    <child link="wheel_br"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0.05 -0.4"/>
+  </joint>
+
+  <joint name="leg_bl_wheel_bl" type="continuous">
+    <parent link="leg_bl"/>
+    <child link="wheel_bl"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 -0.05 -0.4"/>
+  </joint> 
+
+</robot>

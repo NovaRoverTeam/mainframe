@@ -1,0 +1,36 @@
+<launch>
+  <!-- Roslaunch file to run nodes in mainframe. -->
+
+  <node name="overlord" pkg="mainframe" type="overlord" output="screen" />
+
+  <node name="controls" pkg="mainframe" type="controls" output="screen" />
+
+  <node name="sim_rover" pkg="mainframe" type="sim_rover" output="screen"/>
+  
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find mainframe)/launch/rocky2.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- Load URDF model into ROS parameter server, IMPORTANT!!! -->
+  <param name="robot_description"
+  command="$(find xacro)/xacro --inorder '$(find mainframe)/urdf/four_susp.urdf'"/>
+
+  <!-- Store robot name -->
+  <param name="robot_name" type="str" value="four_susp"/>
+
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+args="-urdf -model moto -param robot_description"/>
+
+  <!-- Load joint controller configs into ROS parameter server -->
+  <rosparam file="$(find mainframe)/config/four_susp_config.yaml" command="load"/>
+
+<!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/four_susp" args="joint_state_controller leg_fr_effort_controller leg_br_effort_controller leg_fl_effort_controller leg_bl_effort_controller wheel_fr_effort_controller wheel_br_effort_controller wheel_fl_effort_controller wheel_bl_effort_controller"/>
+
+</launch>

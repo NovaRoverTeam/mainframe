@@ -1,0 +1,1126 @@
+<?xml version="1.0"?>
+<robot name="sim_rover_1" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- *********************** GAZEBO *********************** -->
+
+   <gazebo>
+     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+       <robotNamespace>/sim_rover_1</robotNamespace>
+     </plugin>
+   </gazebo>
+
+   <!--<gazebo reference="base_link_leg_fr">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo>
+   <gazebo reference="base_link_leg_br">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo>
+   <gazebo reference="base_link_leg_fl">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo>
+   <gazebo reference="base_link_leg_bl">
+      <implicitSpringDamper>1</implicitSpringDamper>
+   </gazebo> -->
+
+<!-- ******************* TRANSMISSIONS ******************** -->
+
+  <!-- ***************************** LEGS ***************************** -->
+  <transmission name="trm_bleg_r">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_bleg_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_bleg_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="trm_bleg_l">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_bleg_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_bleg_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="trm_fleg_r">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_fleg_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_fleg_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="trm_fleg_l">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_fleg_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_fleg_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <!-- ***************************** WHEELS ***************************** -->
+  <transmission name="trm_bwheel_r">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_bwheel_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_bwheel_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="trm_bwheel_l">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_bwheel_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_bwheel_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="trm_fwheel_r">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_fwheel_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_fwheel_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="trm_fwheel_l">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_fwheel_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_fwheel_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <!-- ***************************** STEERING ***************************** -->
+  <transmission name="trm_bsteer_r">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_bsteer_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_bsteer_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="trm_bsteer_l">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_bsteer_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_bsteer_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="trm_fsteer_r">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_fsteer_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_fsteer_r">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+  <transmission name="trm_fsteer_l">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="j_fsteer_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="act_fsteer_l">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+<!-- ************* LINKS & JOINTS ************ -->
+
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.00023551 -0.099944 7.7704E-05"
+        rpy="0 0 0" />
+      <mass
+        value="17.276" />
+      <inertia
+        ixx="0.33696"
+        ixy="0.00054168"
+        ixz="0.00030699"
+        iyy="1.6473"
+        iyz="-0.00017872"
+        izz="1.4272" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.69804 0.69804 0.69804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+<!-- ************* BACK RIGHT LEG ************** -->
+
+  <link
+    name="bleg_r">
+    <inertial>
+      <origin
+        xyz="-0.025006 2.2204E-16 0.23942"
+        rpy="0 0 0" />
+      <mass
+        value="2.2328" />
+      <inertia
+        ixx="0.068791"
+        ixy="-3.1573E-19"
+        ixz="3.4103E-06"
+        iyy="0.068771"
+        iyz="-1.4583E-17"
+        izz="0.0016756" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bleg_r.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bleg_r.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_bleg_r"
+    type="revolute">
+    <origin
+      xyz="-0.4001 -0.06 0.18503"
+      rpy="0.5236 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="bleg_r" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-0.5235988"
+      upper="1.0471976"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="bmem_r">
+    <inertial>
+      <origin
+        xyz="-0.025 -2.2204E-16 0.036945"
+        rpy="0 0 0" />
+      <mass
+        value="0.43305" />
+      <inertia
+        ixx="0.00057181"
+        ixy="-1.9628E-20"
+        ixz="5.133E-20"
+        iyy="0.00089188"
+        iyz="4.8508E-20"
+        izz="0.00069798" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0.025 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bmem_r.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0.025 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bmem_r.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_bmem_r"
+    type="revolute">
+    <origin
+      xyz="-0.025 0 0.5"
+      rpy="1.0472 -5.3571E-18 6.1232E-17" />
+    <parent
+      link="bleg_r" />
+    <child
+      link="bmem_r" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="bsteer_r">
+    <inertial>
+      <origin
+        xyz="0.0961914433810627 0.0250000080243797 5.9504070115679E-08"
+        rpy="0 0 0" />
+      <mass
+        value="1.17586141997268" />
+      <inertia
+        ixx="0.00561276685308554"
+        ixy="5.0542149965197E-10"
+        ixz="3.17022672970041E-09"
+        iyy="0.00912476488545196"
+        iyz="2.50568828376167E-10"
+        izz="0.00424725187394063" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 -0.025 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bsteer_r.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 -0.025 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bsteer_r.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_bsteer_r"
+    type="revolute">
+    <origin
+      xyz="0 0 0.06"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="bmem_r" />
+    <child
+      link="bsteer_r" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="bwheel_r">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="3.9549407607709" />
+      <inertia
+        ixx="0.0337021722670314"
+        ixy="1.67282003214665E-19"
+        ixz="-2.64986943783354E-19"
+        iyy="0.0188603494315555"
+        iyz="-7.93387527261529E-20"
+        izz="0.0188603494315555" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bwheel_r.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bwheel_r.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_bwheel_r"
+    type="continuous">
+    <origin
+      xyz="0.16 0 0"
+      rpy="1.5707963267949 1.5707963267949 0" />
+    <parent
+      link="bsteer_r" />
+    <child
+      link="bwheel_r" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+
+<!-- ************* BACK LEFT LEG ************** -->
+
+  <link
+    name="bleg_l">
+    <inertial>
+      <origin
+        xyz="0.025006 0 0.23942"
+        rpy="0 0 0" />
+      <mass
+        value="2.2328" />
+      <inertia
+        ixx="0.068791"
+        ixy="2.6148E-19"
+        ixz="-3.4103E-06"
+        iyy="0.068771"
+        iyz="6.9931E-18"
+        izz="0.0016756" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bleg_l.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bleg_l.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_bleg_l"
+    type="revolute">
+    <origin
+      xyz="-0.4001 -0.06 -0.18497"
+      rpy="-2.618 2.0485E-18 3.1416" />
+    <parent
+      link="base_link" />
+    <child
+      link="bleg_l" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-1.0471976"
+      upper="0.5235988"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="bmem_l">
+    <inertial>
+      <origin
+        xyz="0.025 0 0.036945"
+        rpy="0 0 0" />
+      <mass
+        value="0.43305" />
+      <inertia
+        ixx="0.00057181"
+        ixy="1.9235E-20"
+        ixz="-6.6562E-21"
+        iyy="0.00089188"
+        iyz="9.7779E-21"
+        izz="0.00069798" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.025 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bmem_l.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.025 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bmem_l.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_bmem_l"
+    type="revolute">
+    <origin
+      xyz="0.025 0 0.5"
+      rpy="1.0472 8.851E-17 1.4921E-16" />
+    <parent
+      link="bleg_l" />
+    <child
+      link="bmem_l" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="bsteer_l">
+    <inertial>
+      <origin
+        xyz="0.0961914433810629 0.0249999919756203 -5.95040699769012E-08"
+        rpy="0 0 0" />
+      <mass
+        value="1.17586141997268" />
+      <inertia
+        ixx="0.00561276685308554"
+        ixy="-5.05421499903141E-10"
+        ixz="-3.17022672870141E-09"
+        iyy="0.00912476488545209"
+        iyz="2.5056882830378E-10"
+        izz="0.00424725187394076" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 -0.025 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bsteer_l.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 -0.025 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bsteer_l.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_bsteer_l"
+    type="revolute">
+    <origin
+      xyz="0 0 0.06"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="bmem_l" />
+    <child
+      link="bsteer_l" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="bwheel_l">
+    <inertial>
+      <origin
+        xyz="0 -1.38777878078145E-17 -1.38777878078145E-17"
+        rpy="0 0 0" />
+      <mass
+        value="3.95494076077089" />
+      <inertia
+        ixx="0.0337021722670314"
+        ixy="4.09392232449225E-19"
+        ixz="2.38335700971551E-19"
+        iyy="0.0188603494315555"
+        iyz="4.29350413051364E-18"
+        izz="0.0188603494315555" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bwheel_l.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/bwheel_l.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_bwheel_l"
+    type="continuous">
+    <origin
+      xyz="0.16 0 0"
+      rpy="1.5707963267949 1.5707963267949 0" />
+    <parent
+      link="bsteer_l" />
+    <child
+      link="bwheel_l" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+
+<!-- ************* FRONT LEFT LEG ************** -->
+
+  <link
+    name="fleg_l">
+    <inertial>
+      <origin
+        xyz="0.025006 -2.7756E-17 0.23942"
+        rpy="0 0 0" />
+      <mass
+        value="2.2328" />
+      <inertia
+        ixx="0.068791"
+        ixy="6.9224E-20"
+        ixz="-3.4103E-06"
+        iyy="0.068771"
+        iyz="1.3878E-17"
+        izz="0.0016756" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fleg_l.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fleg_l.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_fleg_l"
+    type="revolute">
+    <origin
+      xyz="0.4499 -0.06 -0.18497"
+      rpy="-2.618 -1.8733E-18 3.1416" />
+    <parent
+      link="base_link" />
+    <child
+      link="fleg_l" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-1.0471976"
+      upper="0.5235988"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="fmem_l">
+    <inertial>
+      <origin
+        xyz="0.025 0 0.036945"
+        rpy="0 0 0" />
+      <mass
+        value="0.43305" />
+      <inertia
+        ixx="0.00057181"
+        ixy="-6.8602E-20"
+        ixz="9.4789E-20"
+        iyy="0.00089188"
+        iyz="9.6898E-20"
+        izz="0.00069798" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.025 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fmem_l.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.025 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fmem_l.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_fmem_l"
+    type="revolute">
+    <origin
+      xyz="0.025 0 0.5"
+      rpy="1.0472 4.7763E-32 -4.7845E-18" />
+    <parent
+      link="fleg_l" />
+    <child
+      link="fmem_l" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="fsteer_l">
+    <inertial>
+      <origin
+        xyz="0.0961914433810629 0.0250000080243798 5.95040698936344E-08"
+        rpy="0 0 0" />
+      <mass
+        value="1.17586141997268" />
+      <inertia
+        ixx="0.00561276685308554"
+        ixy="5.05421535303316E-10"
+        ixz="3.17022673053214E-09"
+        iyy="0.00912476488545195"
+        iyz="2.50568827419139E-10"
+        izz="0.00424725187394062" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 -0.025 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fsteer_l.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 -0.025 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fsteer_l.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_fsteer_l"
+    type="revolute">
+    <origin
+      xyz="0 0 0.06"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="fmem_l" />
+    <child
+      link="fsteer_l" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="fwheel_l">
+    <inertial>
+      <origin
+        xyz="1.11022302462516E-16 -1.38777878078145E-17 0"
+        rpy="0 0 0" />
+      <mass
+        value="3.95494076077089" />
+      <inertia
+        ixx="0.0337021722670313"
+        ixy="-4.01483688508953E-19"
+        ixz="-5.0775365569417E-19"
+        iyy="0.0188603494315554"
+        iyz="2.63027994087095E-19"
+        izz="0.0188603494315554" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fwheel_l.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fwheel_l.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_fwheel_l"
+    type="continuous">
+    <origin
+      xyz="0.16 0 0"
+      rpy="1.5707963267949 1.5707963267949 0" />
+    <parent
+      link="fsteer_l" />
+    <child
+      link="fwheel_l" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+
+<!-- ************* FRONT RIGHT LEG ************** -->
+
+  <link
+    name="fleg_r">
+    <inertial>
+      <origin
+        xyz="-0.025006 1.1102E-16 0.23942"
+        rpy="0 0 0" />
+      <mass
+        value="2.2328" />
+      <inertia
+        ixx="0.068791"
+        ixy="-1.3208E-20"
+        ixz="3.4103E-06"
+        iyy="0.068771"
+        iyz="-2.4937E-17"
+        izz="0.0016756" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fleg_r.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fleg_r.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_fleg_r"
+    type="revolute">
+    <origin
+      xyz="0.4499 -0.06 0.18503"
+      rpy="0.5236 -3.234E-20 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="fleg_r" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-0.5235988"
+      upper="1.0471976"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="fmem_r">
+    <inertial>
+      <origin
+        xyz="0 0 0.036945"
+        rpy="0 0 0" />
+      <mass
+        value="0.43305" />
+      <inertia
+        ixx="0.00057181"
+        ixy="-1.1782E-20"
+        ixz="-7.248E-20"
+        iyy="0.00089188"
+        iyz="2.0744E-20"
+        izz="0.00069798" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0.025 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fmem_r.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0.025 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fmem_r.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_fmem_r"
+    type="revolute">
+    <origin
+      xyz="-0.025 0 0.5"
+      rpy="1.0472 -5.3571E-18 6.1232E-17" />
+    <parent
+      link="fleg_r" />
+    <child
+      link="fmem_r" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="fsteer_r">
+    <inertial>
+      <origin
+        xyz="0.0250000080243798 -0.0961914433810629 5.95040698936344E-08"
+        rpy="0 0 0" />
+      <mass
+        value="1.17586141997268" />
+      <inertia
+        ixx="0.00912476488545223"
+        ixy="-5.05421453739121E-10"
+        ixz="2.5056882884587E-10"
+        iyy="0.00561276685308557"
+        iyz="-3.17022672765945E-09"
+        izz="0.00424725187394089" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 -0.025 0"
+        rpy="0 0 1.5707963267949" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fsteer_r.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 -0.025 0"
+        rpy="0 0 1.5707963267949" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fsteer_r.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_fsteer_r"
+    type="revolute">
+    <origin
+      xyz="0 0 0.06"
+      rpy="1.5708 -1.5708 0" />
+    <parent
+      link="fmem_r" />
+    <child
+      link="fsteer_r" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="0"
+      velocity="0" />
+  </joint>
+
+  <link
+    name="fwheel_r">
+    <inertial>
+      <origin
+        xyz="2.22044604925031E-16 1.38777878078145E-17 -1.11022302462516E-16"
+        rpy="0 0 0" />
+      <mass
+        value="3.9549407607709" />
+      <inertia
+        ixx="0.0337021722670314"
+        ixy="1.3834342351992E-19"
+        ixz="6.37008809819038E-19"
+        iyy="0.0188603494315555"
+        iyz="-1.50626280823456E-19"
+        izz="0.0188603494315555" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fwheel_r.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mainframe/meshes/fwheel_r.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j_fwheel_r"
+    type="continuous">
+    <origin
+      xyz="0.16 0 0"
+      rpy="1.5707963267949 1.5707963267949 0" />
+    <parent
+      link="fsteer_r" />
+    <child
+      link="fwheel_r" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+
+  <plugin name="vert_wb" filename="libvert_wb.so"/>
+</robot>
