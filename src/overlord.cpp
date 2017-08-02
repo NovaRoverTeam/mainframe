@@ -1,10 +1,14 @@
 #include "ros/ros.h"
 #include <ros/console.h>
 #include <math.h>
+
 #include "mainframe/RawControl.h"
 #include "mainframe/Command.h"
+#include <rover/DriveCommand.h>
 
-float stick_threshold = 0.2;
+#define MAX_PWM 4096
+
+float stick_threshold = 0.1;
 
 class PubScrub
 {
@@ -12,60 +16,37 @@ public:
   PubScrub()
   {
     pub_ = n_.advertise<mainframe::Command>("command_data", 1000);
-
+    
     scrub_ = n_.subscribe("control_data", 1000, &PubScrub::control_dataCallback, this);
+    
+    client_ = n_.serviceClient<rover::DriveCommand>("DriveCommand");
   }
-
-  void control_dataCallback(const mainframe::RawControl::ConstPtr& msg)
-  {
-    //ROS_INFO("Axis %d has value %.5f", msg->id, msg->length);
-
-    mainframe::Command cmd_msg;
-    cmd_msg.system = 0;
-    cmd_msg.target = 0;
-
-    bool driving = false;
-
-    
-    ROS_INFO_STREAM(msg->axis_x); 
-    ROS_INFO_STREAM(fabs(msg->axis_y)); 
-
-    if (fabs(msg->axis_y) > stick_threshold) 
-    {
-      driving = true;
-      //ROS_INFO("DRIVE");
-      cmd_msg.command = 1; // Drive
-      cmd_msg.value1 = msg->axis_y;
-      cmd_msg.value2 = msg->axis_y;
-    }
-    
-    if ((!driving) && (fabs(msg->axis_x) > stick_threshold))
-    {
-      //ROS_INFO("STEER");
-      cmd_msg.command = 2; // Steer
-      cmd_msg.value1 = -(msg->axis_x);
-      cmd_msg.value2 = msg->axis_x;
-    }
- 
-    //if (msg->id == 1) // If y axis
-    //{
-    //  if (fabs(msg->length) > stick_threshold)
-    //  {
-    //    if (msg->length > 0) cmd_msg.command = 1; // Drive forward
-    //    else cmd_msg.command = 2;                 // Drive back
-    //  }
-    //  else cmd_msg.command = 0;                   // Stay, Rovey!
-    //
-    //  pub_.publish(cmd_msg); // Publish the command
-    //} 
   
-    pub_.publish(cmd_msg);      
+  void control_dataCallback(const mainframe::RawControl::ConstPtr& msg)  
+  {    
+    int x_axis = msg->axis_x;
+    int y_axis = msg->axis_y;
+
+    ROS_INFO_STREAM(y_axis); 
+
+    if (fabs(y_axis) > stick_threshold) 
+    {
+      rover::DriveCommand srv;
+
+      srv.request.f_wheel_l = (int) y_axis*MAX_PWM;
+      srv.request.f_wheel_r = (int) y_axis*MAX_PWM;
+      srv.request.b_wheel_l = (int) y_axis*MAX_PWM;
+      srv.request.b_wheel_r = (int) y_axis*MAX_PWM;
+
+      client_.call(srv);
+    }    
   }
 
 private:
   ros::NodeHandle n_; 
   ros::Publisher pub_;
   ros::Subscriber scrub_;
+  ros::ServiceClient client_;
 
 }; // END OF CLASS - PubScrub
 
