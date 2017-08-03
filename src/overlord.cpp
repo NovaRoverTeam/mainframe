@@ -4,11 +4,13 @@
 
 #include "mainframe/RawControl.h"
 #include "mainframe/Command.h"
+
 #include <rover/DriveCommand.h>
+#include <rover/SteerCommand.h>
 
 #define MAX_PWM 4096
 
-float stick_threshold = 0.1;
+float stick_threshold = 0;
 
 class PubScrub
 {
@@ -19,13 +21,15 @@ public:
     
     scrub_ = n_.subscribe("control_data", 1000, &PubScrub::control_dataCallback, this);
     
-    client_ = n_.serviceClient<rover::DriveCommand>("DriveCommand");
+    drive_client = n_.serviceClient<rover::DriveCommand>("DriveCommand");
+
+    steer_client = n_.serviceClient<rover::SteerCommand>("SteerCommand");
   }
   
   void control_dataCallback(const mainframe::RawControl::ConstPtr& msg)  
   {    
-    int x_axis = msg->axis_x;
-    int y_axis = msg->axis_y;
+    float x_axis = msg->axis_x;
+    float y_axis = msg->axis_y;
 
     ROS_INFO_STREAM(y_axis); 
 
@@ -33,20 +37,35 @@ public:
     {
       rover::DriveCommand srv;
 
-      srv.request.f_wheel_l = (int) y_axis*MAX_PWM;
-      srv.request.f_wheel_r = (int) y_axis*MAX_PWM;
-      srv.request.b_wheel_l = (int) y_axis*MAX_PWM;
-      srv.request.b_wheel_r = (int) y_axis*MAX_PWM;
+      ROS_INFO_STREAM(y_axis*((float)MAX_PWM)); 
+      ROS_INFO_STREAM(int(y_axis*((float)MAX_PWM))); 
 
-      client_.call(srv);
+      srv.request.f_wheel_l = int(y_axis*((float)MAX_PWM));
+      srv.request.f_wheel_r = int(y_axis*((float)MAX_PWM));
+      srv.request.b_wheel_l = int(y_axis*((float)MAX_PWM));
+      srv.request.b_wheel_r = int(y_axis*((float)MAX_PWM));
+
+      drive_client.call(srv);
     }    
+
+    if (msg->depress)
+    {
+      rover::SteerCommand srv;
+
+      srv.request.steer_left = msg->trigger_left;
+
+      ROS_INFO_STREAM(srv.request.steer_left); 
+
+      steer_client.call(srv);
+    }
   }
 
 private:
   ros::NodeHandle n_; 
   ros::Publisher pub_;
   ros::Subscriber scrub_;
-  ros::ServiceClient client_;
+  ros::ServiceClient drive_client;
+  ros::ServiceClient steer_client;
 
 }; // END OF CLASS - PubScrub
 
