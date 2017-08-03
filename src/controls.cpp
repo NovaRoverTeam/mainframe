@@ -23,8 +23,13 @@ int main(int argc, char **argv)
     // Broadcasting left stick values at 10 Hz
     GamepadStickXY(GAMEPAD_0, STICK_LEFT, &l_stick_x, &l_stick_y);
 
-    bool r_trigger = GamepadTriggerDown(GAMEPAD_0, TRIGGER_RIGHT);
-    bool l_trigger = GamepadTriggerDown(GAMEPAD_0, TRIGGER_LEFT);
+    bool r_trigger = GamepadTriggerTriggered(GAMEPAD_0, TRIGGER_RIGHT);
+    bool l_trigger = GamepadTriggerTriggered(GAMEPAD_0, TRIGGER_LEFT);
+
+    bool r_trigger_rel = GamepadTriggerReleased(GAMEPAD_0, TRIGGER_RIGHT);
+    bool l_trigger_rel = GamepadTriggerReleased(GAMEPAD_0, TRIGGER_LEFT);
+  
+    bool a_but = GamepadButtonTriggered(GAMEPAD_0, BUTTON_A);
 
     mainframe::RawControl stick_msg; // Msg to use for stick vals
 
@@ -40,11 +45,23 @@ int main(int argc, char **argv)
       stick_msg.depress = true;
       stick_msg.trigger_left = false;
     }
+    else if (r_trigger_rel == true)
+    {
+      stick_msg.depress = false;
+      stick_msg.trigger_left = false;
+    }
     else if (l_trigger == true)
     {
       stick_msg.depress = true;
       stick_msg.trigger_left = true;
     }
+    else if (l_trigger_rel == true)
+    {
+      stick_msg.depress = false;
+      stick_msg.trigger_left = true;
+    }
+
+    stick_msg.button = a_but;
 
     control_data_pub.publish(stick_msg);
     

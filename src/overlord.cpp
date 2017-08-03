@@ -48,16 +48,15 @@ public:
       drive_client.call(srv);
     }    
 
-    if (msg->depress)
-    {
-      rover::SteerCommand srv;
+    rover::SteerCommand srv;
 
-      srv.request.steer_left = msg->trigger_left;
+    srv.request.single = msg->button;
+    srv.request.start = msg->depress;
+    srv.request.steer_left = msg->trigger_left;
 
-      ROS_INFO_STREAM(srv.request.steer_left); 
+    ROS_INFO_STREAM(srv.request.steer_left); 
 
-      steer_client.call(srv);
-    }
+    steer_client.call(srv);
   }
 
 private:
