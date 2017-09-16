@@ -2,79 +2,46 @@
 #include <ros/console.h>
 #include <math.h>
 
-#include "mainframe/RawControl.h"
-#include "mainframe/Command.h"
+#include <mainframe/RawControl.h> // Custom ROS msgs
+#include <rover/DriveCmd.h>
 
-#include <rover/DriveCommand.h>
-#include <rover/SteerCommand.h>
+float drive_percent = 0; // Speed control command, from -100% to 100%.
+float steer_angle = 0; // Steering angle command, from -45 to 45 degrees
 
-#define MAX_PWM 4096
+void control_data_cb(const mainframe::RawControl::ConstPtr& msg)  
+{      
+  drive_percent = 100*(msg->axis_ly); // Drive with left stick vertical
+  steer_angle = 45*(msg->axis_rx); // Steer with right stick horizontal
 
-float stick_threshold = 0;
-
-class PubScrub
-{
-public:
-  PubScrub()
-  {
-    pub_ = n_.advertise<mainframe::Command>("command_data", 1000);
-    
-    scrub_ = n_.subscribe("control_data", 1000, &PubScrub::control_dataCallback, this);
-    
-    drive_client = n_.serviceClient<rover::DriveCommand>("DriveCommand");
-
-    steer_client = n_.serviceClient<rover::SteerCommand>("SteerCommand");
-  }
-  
-  void control_dataCallback(const mainframe::RawControl::ConstPtr& msg)  
-  {    
-    float x_axis = msg->axis_x;
-    float y_axis = msg->axis_y;
-
-    ROS_INFO_STREAM(y_axis); 
-
-    if (fabs(y_axis) > stick_threshold) 
-    {
-      rover::DriveCommand srv;
-
-      ROS_INFO_STREAM(y_axis*((float)MAX_PWM)); 
-      ROS_INFO_STREAM(int(y_axis*((float)MAX_PWM))); 
-
-      srv.request.f_wheel_l = int(y_axis*((float)MAX_PWM));
-      srv.request.f_wheel_r = int(y_axis*((float)MAX_PWM));
-      srv.request.b_wheel_l = int(y_axis*((float)MAX_PWM));
-      srv.request.b_wheel_r = int(y_axis*((float)MAX_PWM));
-
-      drive_client.call(srv);
-    }    
-
-    rover::SteerCommand srv;
-
-    srv.request.single = msg->button;
-    srv.request.start = msg->depress;
-    srv.request.steer_left = msg->trigger_left;
-
-    ROS_INFO_STREAM(srv.request.steer_left); 
-
-    steer_client.call(srv);
-  }
-
-private:
-  ros::NodeHandle n_; 
-  ros::Publisher pub_;
-  ros::Subscriber scrub_;
-  ros::ServiceClient drive_client;
-  ros::ServiceClient steer_client;
-
-}; // END OF CLASS - PubScrub
+  ROS_INFO_STREAM("Drive: " << drive_percent << "%"); 
+  ROS_INFO_STREAM("Steer: " << steer_angle << "%"); 
+}
 
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "overlord");
+  ros::NodeHandle n; 
+  ros::Rate loop_rate(3); // Loop rate in Hz
 
-  PubScrub PS; // Create PubScrub object
+  ros::Subscriber control_sub = n.subscribe("control_data", 10, &control_data_cb);
 
-  ros::spin();
+  ros::Publisher drivecmd_pub = n.advertise<rover::DriveCmd>("command_data", 10);
+
+  while (ros::ok())
+  {    
+    // Create ROS msg for drive command
+    rover::DriveCmd msg;
+
+    // Store current values in ROS msg
+    msg.acc = drive_percent; // Named because of plans for acceleration control
+    msg.steer = steer_angle;
+
+    // Publish the ROS msg
+    drivecmd_pub.publish(msg);
+
+    ros::spinOnce();
+    loop_rate.sleep();
+  }
 
   return 0;
 }

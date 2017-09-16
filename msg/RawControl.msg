@@ -1,14 +1,12 @@
-# Compact message for user controller input.
-#
-# Type:
-#       0: Button
-#       1: Stick
-#       2: Trigger
+# Message for user controller input.
 
-bool depress    # True if trigger depressed, false if released
-bool trigger_left  # True if left trigger
-bool button     # "A" button value
+float64 trig_l  # Normalised left trigger, -1 to 1
+float64 trig_r  # Normalised right trigger, -1 to 1
 
-# Added these on 07/05/17 *****************************
-float64 axis_x  # Normalised stick x
-float64 axis_y  # Normalised stick y
+bool but_a      # "A" button value
+
+float64 axis_lx  # Normalised left stick x, -1 to 1
+float64 axis_ly  # Normalised left stick y, -1 to 1
+
+float64 axis_rx  # Normalised right stick x, -1 to 1
+float64 axis_ry  # Normalised right stick y, -1 to 1

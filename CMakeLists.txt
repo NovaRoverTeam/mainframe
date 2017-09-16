@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(mainframe)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
-# add_definitions(-std=c++11)
+#add_definitions(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -11,8 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  geometry_msgs
-  gazebo_msgs
   message_generation
   rover
 )
@@ -54,7 +52,6 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   RawControl.msg
-  Command.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -73,8 +70,6 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
-  geometry_msgs
-  gazebo_msgs  
 )
 
 ################################################
@@ -205,27 +200,16 @@ include_directories(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(controls src/controls.cpp)
-add_library(gamepad SHARED src/gamepad.c)
+if (NOT TARGET gamepad)
+  add_library(gamepad SHARED include/gamepad/gamepad.c)
+endif()
+
+add_executable(controls src/controls.cpp include/gamepad/gamepad.c)
 target_link_libraries(controls gamepad udev ${catkin_LIBRARIES})
 add_dependencies(controls mainframe_generate_messages_cpp)
 
 add_executable(overlord src/overlord.cpp)
 target_link_libraries(overlord ${catkin_LIBRARIES})
 add_dependencies(overlord mainframe_generate_messages_cpp)
-
-add_executable(sim_rover src/sim_rover.cpp)
-target_link_libraries(sim_rover ${catkin_LIBRARIES})
-add_dependencies(sim_rover mainframe_generate_messages_cpp)
-
-
-# GAZEBO PLUGIN STUFF FOR VERT WB ---------------
-find_package(gazebo REQUIRED)
-include_directories(${GAZEBO_INCLUDE_DIRS})
-link_directories(${GAZEBO_LIBRARY_DIRS})
-list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
-
-add_library(vert_wb SHARED src/vert_wb.cpp)
-target_link_libraries(vert_wb ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
 
 

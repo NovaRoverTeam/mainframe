@@ -1,0 +1,10 @@
+<launch>
+  <!-- Minimal roslaunch file to run nodes in mainframe. -->
+
+  <include file="$(find comms)/launch/base_comms.launch"/>
+
+  <node name="overlord" pkg="mainframe" type="overlord" output="screen" />
+
+  <node name="controls" pkg="mainframe" type="controls" output="screen" />
+  
+</launch>
