@@ -29,15 +29,15 @@ int main(int argc, char **argv)
 
   // Create a ROS "Publisher" object to distribute information from the
   // Xbox controller to the rest of the ROS network
-  ros::Publisher control_data_pub = n.advertise<mainframe::RawControl>("control_data", 1000);
+  ros::Publisher control_data_pub = n.advertise<mainframe::RawControl>("/mainframe/ctrl_data", 1000);
  
   GamepadInit(); // Initialise the Xbox gamepad
 
   // Deadzone compensation - see more info in main ROS loop below
   const int dead_l = GAMEPAD_DEADZONE_LEFT_STICK;
   const int dead_r = GAMEPAD_DEADZONE_RIGHT_STICK;
-  const int stick_max_l = 32767 - dead_l;
-  const int stick_max_r = 32767 - dead_r;
+  const float stick_max_l = 32767 - dead_l;
+  const float stick_max_r = 32767 - dead_r;
 
   // Initialising variables to be refreshed during loop
   int stick_lx = 0;
@@ -66,18 +66,18 @@ int main(int argc, char **argv)
     // as you move the stick out of the deadzone, the reading will jump from 
     // zero to some higher value. The calculations here account for this and 
     // rescale the values to remove this jump.
-    float stick_lx = sgn(stick_lx)*((float) (abs(stick_lx) - dead_l))/stick_max_l;
-    float stick_ly = sgn(stick_ly)*((float) (abs(stick_ly) - dead_l))/stick_max_l;
+    float f_stick_lx = sgn(stick_lx)*((float) abs(stick_lx) - dead_l)/stick_max_l;
+    float f_stick_ly = sgn(stick_ly)*((float) abs(stick_ly) - dead_l)/stick_max_l;
 
-    float stick_rx = sgn(stick_rx)*((float) (stick_rx - dead_l))/stick_max_r;
-    float stick_ry = sgn(stick_ry)*((float) (stick_ry - dead_l))/stick_max_r;
+    float f_stick_rx = sgn(stick_rx)*((float) abs(stick_rx) - dead_l)/stick_max_r;
+    float f_stick_ry = sgn(stick_ry)*((float) abs(stick_ry) - dead_l)/stick_max_r;
 
     // Set the values in the ROS msg
-    msg.axis_lx = stick_lx; 
-    msg.axis_ly = stick_ly;   
+    msg.axis_lx = f_stick_lx; 
+    msg.axis_ly = f_stick_ly;   
 
-    msg.axis_rx = stick_rx; 
-    msg.axis_ry = stick_ry;     
+    msg.axis_rx = f_stick_rx; 
+    msg.axis_ry = f_stick_ry;     
 
     msg.but_a = but_a;
 
