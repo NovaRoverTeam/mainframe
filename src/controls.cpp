@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
   // Create a ROS "Publisher" object to distribute information from the
   // Xbox controller to the rest of the ROS network
-  ros::Publisher control_data_pub = n.advertise<mainframe::RawControl>("/mainframe/ctrl_data", 1000);
+  ros::Publisher control_data_pub = n.advertise<mainframe::RawControl>("ctrl_data", 1000);
  
   GamepadInit(); // Initialise the Xbox gamepad
 

@@ -1,7 +1,13 @@
 <launch>
   <!-- Minimal roslaunch file to run nodes in mainframe. -->
 
+
+  <!--
   <include file="$(find comms)/launch/base_comms.launch"/>
+  -->
+
+  <env name="ROS_MASTER_URI" value="http://192.168.1.199:11311"/>
+  <env name="ROS_IP" value="192.168.1.200"/>
 
   <node name="overlord" pkg="mainframe" type="overlord" output="screen" />
 
