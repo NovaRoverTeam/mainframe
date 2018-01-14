@@ -5,6 +5,8 @@ This is a ROS node to handle the input from an Xbox controller. It
 reads values from the sticks, triggers and buttons and distributes
 them into the ROS network as "RawControl" messages.
 
+https://github.com/elanthis/gamepad/blob/master/gamepad.h
+
 Author: Benjamin Steer
 Organisation: Nova Rover Team
 */
@@ -44,22 +46,18 @@ int main(int argc, char **argv)
   int stick_ly = 0;
   int stick_rx = 0;
   int stick_ry = 0;
+
   bool but_a = false;
 
   while (ros::ok())
   {
     GamepadUpdate(); // Updates the state of the gamepad
 
-    // Broadcasting stick values
+    mainframe::RawControl msg; // Msg to use for stick vals
+
+    // Grab the stick values
     GamepadStickXY(GAMEPAD_0, STICK_LEFT, &stick_lx, &stick_ly);
     GamepadStickXY(GAMEPAD_0, STICK_RIGHT, &stick_rx, &stick_ry);
-
-    //bool r_trigger = GamepadTriggerDown(GAMEPAD_0, TRIGGER_RIGHT);
-    //bool l_trigger = GamepadTriggerDown(GAMEPAD_0, TRIGGER_LEFT);
-  
-    bool but_a = GamepadButtonTriggered(GAMEPAD_0, BUTTON_A);
-
-    mainframe::RawControl msg; // Msg to use for stick vals
 
     // The gamepad sticks have a deadzone - which means for a small amount of
     // movement of the stick, the reading remains at zero. This means as soon
@@ -79,7 +77,25 @@ int main(int argc, char **argv)
     msg.axis_rx = f_stick_rx; 
     msg.axis_ry = f_stick_ry;     
 
-    msg.but_a = but_a;
+    msg.but_x = GamepadButtonTriggered(GAMEPAD_0, BUTTON_X);
+    msg.but_y = GamepadButtonTriggered(GAMEPAD_0, BUTTON_Y);
+    msg.but_a = GamepadButtonTriggered(GAMEPAD_0, BUTTON_A);
+    msg.but_b = GamepadButtonTriggered(GAMEPAD_0, BUTTON_B);
+
+    msg.bump_l = GamepadButtonDown(GAMEPAD_0, BUTTON_LEFT_SHOULDER);
+    msg.bump_r = GamepadButtonDown(GAMEPAD_0, BUTTON_RIGHT_SHOULDER);
+
+    msg.trig_l = GamepadTriggerDown(GAMEPAD_0, TRIGGER_LEFT);
+    msg.trig_r = GamepadTriggerDown(GAMEPAD_0, TRIGGER_RIGHT);
+
+    bool dpad_l = GamepadButtonDown(GAMEPAD_0, BUTTON_DPAD_LEFT);
+    bool dpad_r = GamepadButtonDown(GAMEPAD_0, BUTTON_DPAD_RIGHT);
+
+    bool dpad_u = GamepadButtonDown(GAMEPAD_0, BUTTON_DPAD_UP);
+    bool dpad_d = GamepadButtonDown(GAMEPAD_0, BUTTON_DPAD_DOWN);
+
+    msg.axis_dx = dpad_r - dpad_l; // Left -1, none/both 0, right 1
+    msg.axis_dy = dpad_u - dpad_d; // Down -1, none/both 0, up 1
 
     // Publish the ROS msg
     control_data_pub.publish(msg);
