@@ -8,6 +8,7 @@
 #include <rover/ArmCmd.h>
 
 #define LOOP_HZ 10
+#define AXIS_THRES 0.5
 
 float drive_percent = 0; // Speed control command, from -100% to 100%.
 float steer_angle = 0; // Steering angle command, from -45 to 45 degrees
@@ -60,15 +61,15 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
   }
   else // If controlling arm
   {
-    base     = (msg->axis_rx > 0) - (msg->axis_rx < 0); // -1, 0 or 1
-    shoulder = (msg->axis_ry > 0) - (msg->axis_ry < 0); // -1, 0 or 1
-    forearm  = (msg->axis_ly > 0) - (msg->axis_ly < 0); // -1, 0 or 1
+    base     = (msg->axis_rx > AXIS_THRES) - (msg->axis_rx < -AXIS_THRES); // -1, 0 or 1
+    shoulder = (msg->axis_ry > AXIS_THRES) - (msg->axis_ry < -AXIS_THRES); // -1, 0 or 1
+    forearm  = (msg->axis_ly > AXIS_THRES) - (msg->axis_ly < -AXIS_THRES); // -1, 0 or 1
     wrist_x  = msg->axis_dx;
     wrist_y  = msg->axis_dy;
     twist    = msg->bump_r - msg->bump_l; // -1, 0 or 1
     grip     = msg->trig_r - msg->trig_l; // -1, 0 or 1
 
-    sensitivity += msg->but_b - msg->but_a; // increase on B, decrease on A    
+    sensitivity = clamp(sensitivity + msg->but_b - msg->but_a, 5, 1); // + on B, - on A    
   }
 }
 
