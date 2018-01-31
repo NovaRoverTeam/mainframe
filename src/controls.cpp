@@ -77,6 +77,9 @@ int main(int argc, char **argv)
     msg.axis_rx = f_stick_rx; 
     msg.axis_ry = f_stick_ry;     
 
+    msg.start = GamepadButtonDown(GAMEPAD_0, BUTTON_START);
+    msg.back = GamepadButtonDown(GAMEPAD_0, BUTTON_BACK);
+
     msg.but_x = GamepadButtonTriggered(GAMEPAD_0, BUTTON_X);
     msg.but_y = GamepadButtonTriggered(GAMEPAD_0, BUTTON_Y);
     msg.but_a = GamepadButtonTriggered(GAMEPAD_0, BUTTON_A);

@@ -1,5 +1,8 @@
 # Message for raw user controller input.
 
+bool start
+bool back
+
 bool trig_l  # Left trigger down?
 bool trig_r  # Right trigger down?
 

@@ -13,6 +13,8 @@
 float drive_percent = 0; // Speed control command, from -100% to 100%.
 float steer_angle = 0; // Steering angle command, from -45 to 45 degrees
 
+bool start   = 0;
+bool back    = 0;
 int base     = 0; // Arm commands
 int shoulder = 0;
 int forearm  = 0;
@@ -41,6 +43,8 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
     drive_percent = 0;
     steer_angle   = 0;
 
+    start         = 0;
+    back          = 0;
     base          = 0; 
     shoulder      = 0;
     forearm       = 0;
@@ -49,6 +53,8 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
     grip          = 0; 
     twist         = 0; 
     // sensitivity is remembered
+
+    ROS_INFO_STREAM("Arm Mode: " << arm_mode);
   }
 
   if (!arm_mode) // If driving
@@ -61,6 +67,8 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
   }
   else // If controlling arm
   {
+    start    = msg->start;
+    back     = msg->back;
     base     = (msg->axis_rx > AXIS_THRES) - (msg->axis_rx < -AXIS_THRES); // -1, 0 or 1
     shoulder = (msg->axis_ry > AXIS_THRES) - (msg->axis_ry < -AXIS_THRES); // -1, 0 or 1
     forearm  = (msg->axis_ly > AXIS_THRES) - (msg->axis_ly < -AXIS_THRES); // -1, 0 or 1
@@ -82,7 +90,7 @@ int main(int argc, char **argv)
   ros::Subscriber control_sub = n.subscribe("ctrl_data", 10, ctrl_data_cb);
 
   ros::Publisher drivecmd_pub = n.advertise<rover::DriveCmd>("cmd_data", 10);
-  ros::Publisher armcmd_pub = n.advertise<rover::ArmCmd>("arm_cmd_data", 10);
+  ros::Publisher armcmd_pub = n.advertise<rover::ArmCmd>("arm_cmd_data", 1);
 
   ros::Publisher hbeat_pub = n.advertise<std_msgs::Empty>("hbeat", 1);
 
@@ -109,12 +117,14 @@ int main(int argc, char **argv)
       rover::ArmCmd msg;
 
       // Store current arm parameters
+      msg.start    = start;
+      msg.back     = back;
       msg.base     = base;
-      msg.shoulder = shoulder;
+      msg.shoulder = -shoulder;
       msg.forearm  = forearm;
-      msg.wrist_x  = wrist_x;
+      msg.wrist_x  = -wrist_x;
       msg.wrist_y  = wrist_y;
-      msg.grip     = grip;
+      msg.grip     = -grip;
       msg.twist    = twist;
 
       msg.sensitivity = sensitivity;
