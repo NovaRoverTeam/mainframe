@@ -8,7 +8,9 @@
 #include <rover/ArmCmd.h>
 
 #define LOOP_HZ 10
+
 #define AXIS_THRES 0.5
+#define MAX_DELTA_DRIVE 10.0 // % a drive command can change in an iteration
 
 float drive_percent = 0; // Speed control command, from -100% to 100%.
 float steer_angle = 0; // Steering angle command, from -45 to 45 degrees
@@ -59,7 +61,12 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
 
   if (!arm_mode) // If driving
   {
-    drive_percent = 100*(msg->axis_ly); // Drive with left stick vertical
+    // Limit the amount the drive_percent can change by in this single iteration
+    float delta_drive_pcnt = 100*(msg->axis_ly) - drive_percent;  
+    delta_drive_pcnt = clamp(delta_drive_pcnt, MAX_DELTA_DRIVE, -MAX_DELTA_DRIVE);
+
+    drive_percent = drive_percent + delta_drive_pcnt; // Apply change
+
     steer_angle = 45*(msg->axis_rx); // Steer with right stick horizontal
 
     //ROS_INFO_STREAM("Drive: " << drive_percent << "%"); 
