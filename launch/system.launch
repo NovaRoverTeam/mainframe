@@ -12,5 +12,7 @@
   <node name="overlord" pkg="mainframe" type="overlord" output="screen" />
 
   <node name="controls" pkg="mainframe" type="controls" output="screen" />
+
+  <node name="stateman" pkg="mainframe" type="stateman" output="screen" />
   
 </launch>

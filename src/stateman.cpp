@@ -12,7 +12,7 @@
 using namespace std;
 
 ros::NodeHandle* n; 
-ros::ServiceClient auto_client;
+ros::ServiceClient start_auto_client;
 boost::thread* spinner_t; // Thread for ROS spinning
 
 string parseError;
@@ -110,7 +110,7 @@ bool Set_AUTO()
   
   if (input == "y")
   {
-    return auto_client.call(srv); // Did the service call succeed?
+    return start_auto_client.call(srv); // Did the service call succeed?
   }
   else if (input == "N" || input == back)
   {
@@ -169,7 +169,9 @@ int main(int argc, char **argv)
   // Override the default ros sigint handler.
   signal(SIGINT, SigintHandler);
 
-  auto_client = (*n).serviceClient<autopilot::calc_route>("/Calc_Route");
+  start_auto_client = 
+    (*n).serviceClient<autopilot::calc_route>("/Start_Auto");
+
   ros::ServiceServer service = 
     (*n).advertiseService("Toggle_Mode", Toggle_Mode);
 

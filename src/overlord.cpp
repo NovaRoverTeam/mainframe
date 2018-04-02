@@ -8,6 +8,7 @@
 #include <mainframe/RawControl.h> // Custom ROS msgs
 #include <rover/DriveCmd.h>
 #include <rover/ArmCmd.h>
+#include <rover/RedCmd.h>
 
 using namespace std;
 
@@ -28,8 +29,11 @@ int wrist_x  = 0;
 int wrist_y  = 0;
 int twist    = 0;
 int grip     = 0;
-
 int sensitivity = 1; // Default arm sensitivity - slowest mode (1-5)
+
+int drill_spd = 0;
+int stepper_pos = 0;
+int actuator_spd = 0;
 
 ros::NodeHandle* n; 
 ros::ServiceClient toggle_mode_clnt; // Service client for mode toggling
@@ -75,7 +79,7 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
     //drive_percent = drive_percent + delta_drive_pcnt; // Apply change
     drive_percent = 100*(msg->axis_ly);
 
-    steer_angle = 45*(msg->axis_rx); // Steer with right stick horizontal
+    steer_angle = 100*(msg->axis_rx); // Steer with right stick horizontal
 
     //ROS_INFO_STREAM("Drive: " << drive_percent << "%"); 
     //ROS_INFO_STREAM("Steer: " << steer_angle << "%"); 
@@ -101,7 +105,9 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
   }
   else if (STATE == "DRILL") // If driving
   {
-    // TODO drill control code
+    drill_spd = 255*(msg->axis_ry);
+    stepper_pos = clamp(stepper_pos + msg->but_b - msg->but_a, 2, -1);
+    actuator_spd = 255*(msg->axis_ly);
   }
 }
 
@@ -116,6 +122,7 @@ int main(int argc, char **argv)
 
   ros::Publisher drivecmd_pub = (*n).advertise<rover::DriveCmd>("cmd_data", 10);
   ros::Publisher armcmd_pub = (*n).advertise<rover::ArmCmd>("arm_cmd_data", 1);
+  ros::Publisher redcmd_pub = (*n).advertise<rover::RedCmd>("red_cmd_data", 1);
 
   ros::Publisher hbeat_pub = (*n).advertise<std_msgs::Empty>("hbeat", 1);
 
@@ -127,6 +134,8 @@ int main(int argc, char **argv)
   {     
     string STATE; (*n).getParam("STATE", STATE); // Grab the current state
 
+    ROS_INFO_STREAM("state is " << STATE);
+
     if (STATE == "DRIVE") // If driving
     {
       // Create ROS msg for drive command
@@ -136,13 +145,14 @@ int main(int argc, char **argv)
       msg.acc = drive_percent; // Named because of plans for acceleration control
       msg.steer = steer_angle;
 
+      ROS_INFO("publishing");
+
       // Publish the ROS msg
       drivecmd_pub.publish(msg);
     }
     else if (STATE == "ARM") // If controlling arm
     {
-      // Create ROS msg for arm command
-      rover::ArmCmd msg;
+      rover::ArmCmd msg; // Create ROS msg for arm command
 
       // Store current arm parameters
       msg.start    = start;
@@ -158,6 +168,16 @@ int main(int argc, char **argv)
       msg.sensitivity = sensitivity;
 
       armcmd_pub.publish(msg);
+    }
+    else if (STATE == "DRILL") // If controlling arm
+    {
+      rover::RedCmd msg; // Create ROS msg for arm command
+  
+      msg.drillSpd = drill_spd;
+      msg.stepperPos = stepper_pos;
+      msg.actuatorSpeed = actuator_spd;
+
+      redcmd_pub.publish(msg);
     }
 
     // Send a heartbeat once per second
