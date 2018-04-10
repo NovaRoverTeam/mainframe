@@ -106,7 +106,7 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
   else if (STATE == "DRILL") // If driving
   {
     drill_spd = 255*(msg->axis_ry);
-    stepper_pos = clamp(stepper_pos + msg->but_b - msg->but_a, 2, -1);
+    stepper_pos = msg->axis_dx;
     actuator_spd = 255*(msg->axis_ly);
   }
 }
@@ -134,8 +134,6 @@ int main(int argc, char **argv)
   {     
     string STATE; (*n).getParam("STATE", STATE); // Grab the current state
 
-    ROS_INFO_STREAM("state is " << STATE);
-
     if (STATE == "DRIVE") // If driving
     {
       // Create ROS msg for drive command
@@ -144,8 +142,6 @@ int main(int argc, char **argv)
       // Store current values in ROS msg
       msg.acc = drive_percent; // Named because of plans for acceleration control
       msg.steer = steer_angle;
-
-      ROS_INFO("publishing");
 
       // Publish the ROS msg
       drivecmd_pub.publish(msg);
@@ -179,6 +175,14 @@ int main(int argc, char **argv)
 
       redcmd_pub.publish(msg);
     }
+    else if (STATE == "STANDBY")
+    {
+      rover::DriveCmd msg;
+      msg.acc = 0;
+      msg.steer = 0;
+      drivecmd_pub.publish(msg);
+    }
+
 
     // Send a heartbeat once per second
     if (hbeat_loop_cnt > LOOP_HZ)
