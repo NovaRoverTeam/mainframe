@@ -15,4 +15,6 @@
 
   <node name="stateman" pkg="mainframe" type="stateman" output="screen" />
   
+	<node name="glen" pkg="autopilot" type="glen.py" output="screen"/>
+
 </launch>
