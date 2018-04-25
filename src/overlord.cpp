@@ -114,7 +114,7 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "overlord");
-  n = new ros::NodeHandle(); 
+  n = new ros::NodeHandle("~"); 
 
   ros::Rate loop_rate(LOOP_HZ); // Loop rate in Hz
 

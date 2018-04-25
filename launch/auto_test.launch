@@ -16,10 +16,10 @@
   <node name="controls" pkg="mainframe" type="controls" output="screen" />
 
   <!-- Test lat/long is set to the statue side of the oval. -->
- 	<include file="$(find mainframe)/launch/stateman.launch">
+  <include file="$(find mainframe)/launch/stateman.launch">
   	<arg name="test_lat"  value="-37.9106944"/>
-  	<arg name="test_long" value="145.1355000"/>
-	</include>  
+  	<arg name="test_long" value="145.1355000"/> 
+  </include>  
   
 	<node name="glen" pkg="autopilot" type="glen.py" output="screen"/>
 

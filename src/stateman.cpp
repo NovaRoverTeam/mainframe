@@ -20,7 +20,7 @@ string toggleError;
 string cancel;
 string back;
 
-float test_lat, test_long;
+double test_lat, test_long;
 
 //--**--..--**--..--**--..--**--..--**--..--**--..--**--..--**--..--**--
 // Toggle_Mode:
@@ -125,7 +125,9 @@ bool Set_AUTO()
   
   if (input == "y")
   {
-    return start_auto_client.call(srv); // Did the service call succeed?
+    bool res = start_auto_client.call(srv); // Did the service call succeed?
+    ROS_INFO_STREAM("-- Result of start auto service call was " << res);
+    return res;
   }
   else if (input == "N" || input == back)
   {
@@ -179,7 +181,7 @@ void Spinner()
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "stateman");
-  n = new ros::NodeHandle();
+  n = new ros::NodeHandle("~");
 
   // Override the default ros sigint handler.
   signal(SIGINT, SigintHandler);
@@ -193,8 +195,10 @@ int main(int argc, char **argv)
   // Possible states are STANDBY, DRIVE, ARM, DRILL and AUTO, set default
   n->setParam("STATE", "STANDBY");
 
-  n->getParam("test_lat", test_lat);
-  n->getParam("test_long", test_long);
+  //n->getParam("test_lat", test_lat);
+  //n->getParam("test_long", test_long);
+  test_lat = -37.9106944;
+  test_long = 145.1355000;
 
   parseError = "-- Failed to parse command.\n";
   toggleError = "\n-- Can't toggle state in STANDBY or AUTO modes.\n";
