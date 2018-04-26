@@ -32,12 +32,12 @@ bool Toggle_Mode(std_srvs::Trigger::Request  &req,
 {
   bool parsed = true; // Valid state stored in STATE var
 
-  string STATE; n->getParam("STATE", STATE);
+  string STATE; n->getParam("/STATE", STATE);
 
   // *** TOGGLE THE STATE BETWEEN DRIVE, ARM, DRILL ***
-  if      (STATE == "DRIVE") n->setParam("STATE", "ARM");
-  else if (STATE == "ARM"  ) n->setParam("STATE", "DRILL");
-  else if (STATE == "DRILL") n->setParam("STATE", "DRIVE");
+  if      (STATE == "DRIVE") n->setParam("/STATE", "ARM");
+  else if (STATE == "ARM"  ) n->setParam("/STATE", "DRILL");
+  else if (STATE == "DRILL") n->setParam("/STATE", "DRIVE");
   else // If current state is not any of these three, give error
   {
     cout << toggleError;
@@ -46,7 +46,7 @@ bool Toggle_Mode(std_srvs::Trigger::Request  &req,
     res.message = toggleError;
   }
 
-  n->getParam("STATE", STATE); // Retrieve the state once more
+  n->getParam("/STATE", STATE); // Retrieve the state once more
   if (parsed) // Return true and give a positive response message
   {
     res.success = true;
@@ -181,7 +181,7 @@ void Spinner()
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "stateman");
-  n = new ros::NodeHandle("~");
+  n = new ros::NodeHandle("/");
 
   // Override the default ros sigint handler.
   signal(SIGINT, SigintHandler);
@@ -193,12 +193,10 @@ int main(int argc, char **argv)
     n->advertiseService("Toggle_Mode", Toggle_Mode);
 
   // Possible states are STANDBY, DRIVE, ARM, DRILL and AUTO, set default
-  n->setParam("STATE", "STANDBY");
+  n->setParam("/STATE", "STANDBY");
 
-  //n->getParam("test_lat", test_lat);
-  //n->getParam("test_long", test_long);
-  test_lat = -37.9106944;
-  test_long = 145.1355000;
+  n->getParam("/stateman/test_lat", test_lat);
+  n->getParam("/stateman/test_long", test_long);
 
   parseError = "-- Failed to parse command.\n";
   toggleError = "\n-- Can't toggle state in STANDBY or AUTO modes.\n";
@@ -211,7 +209,7 @@ int main(int argc, char **argv)
   cout << "-- Welcome to the Nova Rover State Manager!";
   while (ros::ok())
   {     
-    //string STATE; n->getParam("STATE", STATE);    
+    //string STATE; n->getParam("/STATE", STATE);    
     //cout << "** Current mode is " << STATE << "**\n";   
 
     string input; 
@@ -240,7 +238,7 @@ int main(int argc, char **argv)
 
     if (success) // Set state
     {
-      n->setParam("STATE", input);
+      n->setParam("/STATE", input);
       cout << "-- Set mode to " << input << "\n";
     }
     else if (parsed)

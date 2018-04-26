@@ -10,7 +10,8 @@
   
   <env name="ROS_MASTER_URI" value="$(arg master5)"/>
   <env name="ROS_IP"         value="$(arg ip5)"    />
-  
+  <env name="ROS_NAMESPACE"  value="/"             />  
+
   <node name="overlord" pkg="mainframe" type="overlord" output="screen" />
 
   <node name="controls" pkg="mainframe" type="controls" output="screen" />
@@ -21,6 +22,6 @@
   	<arg name="test_long" value="145.1355000"/> 
   </include>  
   
-	<node name="glen" pkg="autopilot" type="glen.py" output="screen"/>
+  <node name="glen" pkg="autopilot" type="glen.py" output="screen"/>
 
 </launch>

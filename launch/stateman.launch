@@ -5,8 +5,8 @@
 
   <node name="stateman" pkg="mainframe" type="stateman" output="screen">
 
-    <param name="test_lat"   value="$(arg test_lat)"/>
-		<param name="test_long"  value="$(arg test_long)"/>
+    <param name="test_lat"   value="$(arg test_lat)" />
+    <param name="test_long"  value="$(arg test_long)"/>
 
   </node>
 
