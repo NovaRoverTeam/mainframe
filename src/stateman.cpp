@@ -4,6 +4,7 @@
 
 #include <gps/Gps.h>
 #include <autopilot/calc_route.h>
+#include <autopilot/set_dest.h>
 #include <std_srvs/Trigger.h>
 
 #include <boost/thread.hpp> // Handles multi-threading
@@ -13,6 +14,7 @@ using namespace std;
 
 ros::NodeHandle* n; 
 ros::ServiceClient start_auto_client;
+ros::ServiceClient set_dest_client;
 boost::thread* spinner_t; // Thread for ROS spinning
 
 string parseError;
@@ -143,6 +145,48 @@ bool Set_AUTO()
 
 
 //--**--..--**--..--**--..--**--..--**--..--**--..--**--..--**--..--**--
+// Set_RETRIEVE:
+//    Provides a menu for inputting the appropriate data for setting
+//    a destination for the interface to display for extreme retrieval.
+//--..--**--..--**--..--**--..--**--..--**--..--**--..--**--..--**--..--
+bool Set_RETRIEVE()
+{
+  autopilot::set_dest srv; // Create service message
+
+  string input; 
+
+  gps::Gps gps_coord; // Get some GPS coordinate
+  
+  cout << "\t\tLatitude: "; cin >> input; // Grab latitude from user
+  gps_coord.latitude = stof(input.c_str());
+
+  cout << "\t\tLongitude: "; cin >> input; // Grab longitude from user
+  gps_coord.longitude = stof(input.c_str());
+
+  srv.request.destination = gps_coord;
+ 
+  cout << "\tCommence RETRIEVE mode now? [y/N]: ";
+  cin >> input;
+  
+  if (input == "y")
+  {
+    bool res = set_dest_client.call(srv); // Did the service call succeed?
+    return res;
+  }
+  else if (input == "N" || input == back)
+  {
+    cout << cancel;
+    return false;
+  }
+  else 
+  {
+    cout << parseError;
+    return false;
+  }
+}
+
+
+//--**--..--**--..--**--..--**--..--**--..--**--..--**--..--**--..--**--
 // SigintHandler:
 //    Overrides the default ROS sigint handler for Ctrl+C.
 //--..--**--..--**--..--**--..--**--..--**--..--**--..--**--..--**--..--
@@ -189,6 +233,9 @@ int main(int argc, char **argv)
   start_auto_client = 
     n->serviceClient<autopilot::calc_route>("/Start_Auto");
 
+  set_dest_client = 
+    n->serviceClient<autopilot::set_dest>("/Set_Dest");
+
   ros::ServiceServer service = 
     n->advertiseService("Toggle_Mode", Toggle_Mode);
 
@@ -219,11 +266,12 @@ int main(int argc, char **argv)
     bool parsed = true; // Able to parse command
 
     // Run menu functions
-    if      (input == "STANDBY") success = true;
-    else if (input == "DRIVE"  ) success = true;
-    else if (input == "ARM"    ) success = true;
-    else if (input == "DRILL"  ) success = true;
-    else if (input == "AUTO"   ) success = Set_AUTO();
+    if      (input == "STANDBY" ) success = true;
+    else if (input == "DRIVE"   ) success = true;
+    else if (input == "RETRIEVE") success = Set_RETRIEVE();
+    else if (input == "ARM"     ) success = true;
+    else if (input == "DRILL"   ) success = true;
+    else if (input == "AUTO"    ) success = Set_AUTO();
     else if (input == back) 
     {
       parsed = false;
