@@ -89,10 +89,10 @@ bool Set_AUTO()
   else if (input == "BD")
   {
     cout << "\t\tBearing (deg N+): "; cin >> input; 
-    float bearing = stof(input.c_str());
+    double bearing = stof(input.c_str());
 
     cout << "\t\tDistance (m): "; cin >> input; // Grab longitude from user
-    float distance = stof(input.c_str());
+    double distance = stof(input.c_str());
 
     srv.request.latlng = false; // Using bearing+distance method
     srv.request.bearing = bearing;
@@ -244,6 +244,8 @@ int main(int argc, char **argv)
 
   n->getParam("/stateman/test_lat", test_lat);
   n->getParam("/stateman/test_long", test_long);
+  test_lat = -37.9106944;
+  test_long = 145.1355000;
 
   parseError = "-- Failed to parse command.\n";
   toggleError = "\n-- Can't toggle state in STANDBY or AUTO modes.\n";
