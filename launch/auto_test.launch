@@ -10,7 +10,7 @@
   
   <env name="ROS_MASTER_URI" value="$(arg master5)"/>
   <env name="ROS_IP"         value="$(arg ip5)"    />
-  <env name="ROS_NAMESPACE"  value="/"             />  
+  
 
   <node name="overlord" pkg="mainframe" type="overlord" output="screen" />
 
