@@ -244,6 +244,8 @@ int main(int argc, char **argv)
 
   n->getParam("/stateman/test_lat", test_lat);
   n->getParam("/stateman/test_long", test_long);
+  test_lat = -37.9106944;
+  test_long = 145.1355000;
 
   parseError = "-- Failed to parse command.\n";
   toggleError = "\n-- Can't toggle state in STANDBY or AUTO modes.\n";
