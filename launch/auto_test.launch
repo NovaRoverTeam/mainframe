@@ -9,8 +9,7 @@
   <env name="ip9"     value="10.0.5.1"/>
   
   <env name="ROS_MASTER_URI" value="$(arg master5)"/>
-  <env name="ROS_IP"         value="$(arg ip5)"    />
-  
+  <env name="ROS_IP"         value="$(arg ip5)"    />  
 
   <node name="overlord" pkg="mainframe" type="overlord" output="screen" />
 

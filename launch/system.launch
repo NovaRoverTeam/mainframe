@@ -1,18 +1,16 @@
 <launch>
   <!-- Minimal roslaunch file to run nodes in mainframe. -->
 
+  <!-- IP addresses for 5.8 GHz radios -->
+  <arg name="master5" value = "http://192.168.1.199:11311"/>
+  <arg name="ip5"     value = "192.168.1.200"/>
 
-  <!--
-  <include file="$(find comms)/launch/base_comms.launch"/>
-  -->
+  <!-- IP addresses for 900 MHz radios -->
+  <arg name="master9" value="http://10.0.5.2:11311"/>
+  <env name="ip9"     value="10.0.5.1"/>
   
-  <env name="ROS_MASTER_URI" value="http://192.168.1.199:11311"/>
-  <env name="ROS_IP" value="192.168.1.200"/>
-  
- <!--
-  <env name="ROS_MASTER_URI" value="http://10.0.5.2:11311"/>
-  <env name="ROS_IP" value="10.0.5.1"/>
--->
+  <env name="ROS_MASTER_URI" value="$(arg master5)"/>
+  <env name="ROS_IP"         value="$(arg ip5)"    />  
 
   <node name="overlord" pkg="mainframe" type="overlord" output="screen" />
 
@@ -20,6 +18,6 @@
 
   <node name="stateman" pkg="mainframe" type="stateman" output="screen" />
   
-	<node name="glen" pkg="autopilot" type="glen.py" output="screen"/>
+  <!-- <node name="glen" pkg="autopilot" type="glen.py" output="screen"/> -->
 
 </launch>
