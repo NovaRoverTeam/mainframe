@@ -26,7 +26,7 @@ int sgn(int val) {
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "controls");
-  ros::NodeHandle n("~");
+  ros::NodeHandle n("/");
   ros::Rate loop_rate(10); // 10 Hz
 
   // Create a ROS "Publisher" object to distribute information from the
