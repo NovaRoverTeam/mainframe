@@ -114,7 +114,7 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "overlord");
-  n = new ros::NodeHandle("~"); 
+  n = new ros::NodeHandle("/"); 
 
   ros::Rate loop_rate(LOOP_HZ); // Loop rate in Hz
 
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
   ros::Publisher armcmd_pub = (*n).advertise<rover::ArmCmd>("arm_cmd_data", 1);
   ros::Publisher redcmd_pub = (*n).advertise<rover::RedCmd>("red_cmd_data", 1);
 
-  ros::Publisher hbeat_pub = (*n).advertise<std_msgs::Empty>("hbeat", 1);
+  ros::Publisher hbeat_pub = (*n).advertise<std_msgs::Empty>("/hbeat", 1);
 
   toggle_mode_clnt = (*n).serviceClient<std_srvs::Trigger>("/Toggle_Mode");
 
