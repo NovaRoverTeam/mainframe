@@ -6,7 +6,7 @@
 
   <!-- IP addresses for 900 MHz radios -->
   <arg name="master9" value="http://10.0.5.2:11311"/>
-  <env name="ip9"     value="10.0.5.1"/>
+  <arg name="ip9"     value="10.0.5.1"/>
   
   <env name="ROS_MASTER_URI" value="$(arg master5)"/>
   <env name="ROS_IP"         value="$(arg ip5)"    />  
