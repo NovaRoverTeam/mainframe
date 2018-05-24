@@ -122,6 +122,28 @@ bool Set_AUTO()
     return false;
   }
 
+  cout << "\tEnable LIDAR? [y/N]: ";
+  cin >> input;
+
+  if (input == "y")      srv.request.disable_lidar = 0;
+  else if (input == "N") srv.request.disable_lidar = 1;
+  else 
+  {
+    cout << parseError;
+    return false;
+  }
+
+  cout << "\tRelease Glen? [y/N]: ";
+  cin >> input;
+
+  if (input == "y")      srv.request.glen_enabled = 1;
+  else if (input == "N") srv.request.glen_enabled = 0;
+  else 
+  {
+    cout << parseError;
+    return false;
+  }
+
   cout << "\tCommence AUTO mode now? [y/N]: ";
   cin >> input;
   
