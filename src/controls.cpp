@@ -88,6 +88,9 @@ int main(int argc, char **argv)
     msg.bump_l = GamepadButtonDown(GAMEPAD_0, BUTTON_LEFT_SHOULDER);
     msg.bump_r = GamepadButtonDown(GAMEPAD_0, BUTTON_RIGHT_SHOULDER);
 
+    msg.trig_l_val = GamepadTriggerLength(GAMEPAD_0, TRIGGER_LEFT);
+    msg.trig_r_val = GamepadTriggerLength(GAMEPAD_0, TRIGGER_RIGHT);
+
     msg.trig_l = GamepadTriggerDown(GAMEPAD_0, TRIGGER_LEFT);
     msg.trig_r = GamepadTriggerDown(GAMEPAD_0, TRIGGER_RIGHT);
 

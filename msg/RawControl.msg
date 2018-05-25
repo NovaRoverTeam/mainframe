@@ -6,6 +6,9 @@ bool back
 bool trig_l  # Left trigger down?
 bool trig_r  # Right trigger down?
 
+float64 trig_l_val # Left trigger down?
+float64 trig_r_val # Right trigger down?
+
 bool bump_l  # Left bumper down?
 bool bump_r  # Right bumper down?
 

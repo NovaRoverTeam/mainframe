@@ -31,6 +31,7 @@ int twist    = 0;
 int grip     = 0;
 int sensitivity = 1; // Default arm sensitivity - slowest mode (1-5)
 
+int drill_spd = 0;
 int sensor_spd = 0;
 int stepper_pos = 0;
 int actuator_spd = 0;
@@ -105,6 +106,9 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
   }
   else if (STATE == "DRILL") // If driving
   {
+    if (msg->trig_r)      drill_spd =  255*(msg->trig_r_val);
+    else                  drill_spd = -255*(msg->trig_l_val);
+
     sensor_spd = 255*(msg->axis_ry);
     stepper_pos = msg->axis_dx;
     actuator_spd = 255*(msg->axis_ly);
@@ -169,6 +173,7 @@ int main(int argc, char **argv)
     {
       rover::RedCmd msg; // Create ROS msg for arm command
   
+      msg.drillSpd = drill_spd;
       msg.sensorSpeed = sensor_spd;
       msg.stepperPos = stepper_pos;
       msg.actuatorSpeed = actuator_spd;
