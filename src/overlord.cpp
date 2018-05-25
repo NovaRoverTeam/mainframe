@@ -20,15 +20,16 @@ using namespace std;
 float drive_percent = 0; // Speed control command, from -100% to 100%.
 float steer_angle = 0; // Steering angle command, from -45 to 45 degrees
 
-bool start   = 0;
-bool back    = 0;
-int base     = 0; // Arm commands
-int shoulder = 0;
-int forearm  = 0;
-int wrist_x  = 0;
-int wrist_y  = 0;
-int twist    = 0;
-int grip     = 0;
+bool start    = 0;
+bool back     = 0;
+int base      = 0; // Arm commands
+int shoulder  = 0;
+int forearm   = 0;
+int wrist_x   = 0;
+int wrist_y   = 0;
+int twist     = 0;
+int end_angle = 0;
+int end_pos   = 0;
 int sensitivity = 1; // Default arm sensitivity - slowest mode (1-5)
 
 int drill_spd = 0;
@@ -67,8 +68,8 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
     forearm       = 0;
     wrist_x       = 0;
     wrist_y       = 0;
-    grip          = 0; 
-    twist         = 0; 
+    end_angle     = 0; 
+    end_pos       = 0; 
     // sensitivity is remembered
   }
   else if (STATE == "DRIVE") // If driving
@@ -87,20 +88,23 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
   }
   else if (STATE == "ARM") // If controlling arm
   {
-    start    = msg->start;
-    back     = msg->back;
+    start     = msg->start;
+    back      = msg->back;
 
-    base     = (msg->axis_rx > AXIS_THRES)
+    base      = (msg->axis_rx > AXIS_THRES)
                   - (msg->axis_rx < -AXIS_THRES); // -1, 0 or 1
-    shoulder = (msg->axis_ry > AXIS_THRES) - 
-                  - (msg->axis_ry < -AXIS_THRES); // -1, 0 or 1
-    forearm  = (msg->axis_ly > AXIS_THRES)
+    shoulder  = -(msg->axis_ry > AXIS_THRES)
+                  + (msg->axis_ry < -AXIS_THRES); // -1, 0 or 1
+    forearm   = (msg->axis_ly > AXIS_THRES)
                   - (msg->axis_ly < -AXIS_THRES); // -1, 0 or 1
+    twist     = -(msg->axis_lx > AXIS_THRES)
+                  + (msg->axis_lx < -AXIS_THRES); // -1, 0 or 1
 
-    wrist_x  = msg->axis_dx;
-    wrist_y  = msg->axis_dy;
-    twist    = msg->bump_r - msg->bump_l; // -1, 0 or 1
-    grip     = msg->trig_r - msg->trig_l; // -1, 0 or 1
+    wrist_x   = msg->axis_dx;
+    wrist_y   = msg->axis_dy;
+
+    end_pos   = msg->trig_r - msg->trig_l; // -1, 0 or 1
+    end_angle = msg->bump_r - msg->bump_l; // -1, 0 or 1
 
     sensitivity = clamp(sensitivity + msg->but_b - msg->but_a, 5, 1); // + on B, - on A    
   }
@@ -155,15 +159,16 @@ int main(int argc, char **argv)
       rover::ArmCmd msg; // Create ROS msg for arm command
 
       // Store current arm parameters
-      msg.start    = start;
-      msg.back     = back;
-      msg.base     = base;
-      msg.shoulder = -shoulder;
-      msg.forearm  = forearm;
-      msg.wrist_x  = -wrist_x;
-      msg.wrist_y  = wrist_y;
-      msg.grip     = -grip;
-      msg.twist    = twist;
+      msg.start     = start;
+      msg.back      = back;
+      msg.base      = base;
+      msg.shoulder  = -shoulder;
+      msg.forearm   = forearm;
+      msg.wrist_x   = -wrist_x;
+      msg.wrist_y   = wrist_y;
+      msg.twist     = twist;
+      msg.end_angle = end_angle;
+      msg.end_pos   = end_pos;
 
       msg.sensitivity = sensitivity;
 
