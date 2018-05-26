@@ -264,6 +264,10 @@ int main(int argc, char **argv)
   // Possible states are STANDBY, DRIVE, ARM, DRILL and AUTO, set default
   n->setParam("/STATE", "STANDBY");
 
+  // Possible modes are COMPETITION and TEST
+  // "COMPETITION" engages the Return to Base system
+  //n->setParam("/MODE", "TEST");
+
   n->getParam("/stateman/test_lat", test_lat);
   n->getParam("/stateman/test_long", test_long);
   test_lat = -37.9106944;
