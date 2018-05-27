@@ -14,7 +14,7 @@ using namespace std;
 
 #define LOOP_HZ 10
 
-#define AXIS_THRES 0.5
+#define AXIS_THRES 0.2
 #define MAX_DELTA_DRIVE 10.0 // % a drive command can change in an iteration
 
 float drive_percent = 0; // Speed control command, from -100% to 100%.
@@ -46,6 +46,11 @@ int clamp(int value, int max, int min)
   if (value > max) return max;
   else if (value < min) return min;
   else return value;
+}
+
+int sign(float num)
+{
+  return (num > 0) - (num < 0);
 }
 
 void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)  
@@ -91,17 +96,27 @@ void ctrl_data_cb(const mainframe::RawControl::ConstPtr& msg)
     start     = msg->start;
     back      = msg->back;
 
-    base      = (msg->axis_rx > AXIS_THRES)
-                  - (msg->axis_rx < -AXIS_THRES); // -1, 0 or 1
-    shoulder  = -(msg->axis_ry > AXIS_THRES)
-                  + (msg->axis_ry < -AXIS_THRES); // -1, 0 or 1
-    forearm   = (msg->axis_ly > AXIS_THRES)
-                  - (msg->axis_ly < -AXIS_THRES); // -1, 0 or 1
-    twist     = -(msg->axis_lx > AXIS_THRES)
-                  + (msg->axis_lx < -AXIS_THRES); // -1, 0 or 1
+    float scaler = 4095.0/(1.0 - AXIS_THRES);
 
-    wrist_x   = msg->axis_dx;
-    wrist_y   = msg->axis_dy;
+    base      = (fabs(msg->axis_rx) > AXIS_THRES)
+                  *(fabs(msg->axis_rx) - AXIS_THRES)*scaler/2;
+
+    shoulder  = (fabs(msg->axis_ry) > AXIS_THRES)
+                 *(fabs(msg->axis_ry) - AXIS_THRES)*scaler;
+
+    wrist_y   = (fabs(msg->axis_ly) > AXIS_THRES)
+                 *(fabs(msg->axis_ly) - AXIS_THRES)*scaler;
+
+    wrist_x   = (fabs(msg->axis_lx) > AXIS_THRES)
+                 *(fabs(msg->axis_lx) - AXIS_THRES)*scaler;
+
+    base     = sign(msg->axis_rx) *clamp(base,     2000, 0);
+    shoulder = sign(msg->axis_ry) *clamp(shoulder, 4095, 0);
+    wrist_y  = sign(msg->axis_ly) *clamp(wrist_y,  4095, 0);
+    wrist_x  = sign(msg->axis_lx) *clamp(wrist_x,  4095, 0);
+
+    twist     = msg->axis_dx;
+    forearm   = msg->axis_dy;
 
     end_pos   = msg->trig_r - msg->trig_l; // -1, 0 or 1
     end_angle = msg->bump_r - msg->bump_l; // -1, 0 or 1
